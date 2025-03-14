@@ -55,10 +55,11 @@ function createClass(string memory _name) public {
     require(bytes(_name).length > 0, "Class name cannot be empty");
 
     pendingClassCount++;
-    pendingClasses[pendingClassCount] = PendingClass({
-        name: _name,
-        teacher: msg.sender
-    });
+   pendingClasses[pendingClassCount] = PendingClass({
+    name: _name,
+    teacher: msg.sender,
+    isApproved: false  // Thêm giá trị cho biến isApproved
+});
 
     emit ClassPending(pendingClassCount, _name, msg.sender);
 }
@@ -73,32 +74,13 @@ function getPendingClasses() public view returns (uint256[] memory, string[] mem
         }
     }
 
-    // Cấp phát bộ nhớ cho mảng ngay tại return
+    // Khai báo mảng trong phạm vi function
     uint256[] memory ids = new uint256[](validCount);
     string[] memory names = new string[](validCount);
     address[] memory teachers = new address[](validCount);
 
     uint256 index = 0;
     for (uint256 i = 1; i <= pendingClassCount; i++) {
-        if (pendingClasses[i].teacher != address(0)) {
-            ids[index] = i;
-            names[index] = pendingClasses[i].name;
-            teachers[index] = pendingClasses[i].teacher;
-            index++;
-        }
-    }
-
-    return (ids, names, teachers);
-}
-
-
-    // Tạo mảng động để lưu dữ liệu
-    uint256[] memory ids = new uint256[](validCount);
-    string[] memory names = new string[](validCount);
-    address[] memory teachers = new address[](validCount);
-
-    uint256 index = 0;
-    for (uint256 i = 1; i <= count; i++) {
         if (pendingClasses[i].teacher != address(0)) {
             ids[index] = i;
             names[index] = pendingClasses[i].name;

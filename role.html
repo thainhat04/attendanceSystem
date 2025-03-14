@@ -6,19 +6,12 @@
     <title>Chọn Vai Trò</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("backButton").addEventListener("click", function () {
-            window.location.href = "index.html";
-        });
-    });
-</script>
 <body>
     <h2>Bạn là ai?</h2>
     <button onclick="location.href='dashboard.html?role=teacher'">Tôi là Giảng viên 👨‍🏫</button>
     <button onclick="location.href='dashboard.html?role=student'">Tôi là Sinh viên 🎓</button>
     <button onclick="location.href='admin_login.html'">🔐 Tôi là Admin</button>   
-
+    <button id="backButton">⬅</button>
     <script>
         document.getElementById("adminButton").addEventListener("click", function () {
             const savedAdmin = localStorage.getItem("adminAddress");
@@ -30,8 +23,19 @@
             window.location.href = "dashboard.html?role=admin";
         });
     </script>
-</body>
 
-<button id="backButton">⬅</button>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const backButton = document.getElementById("backButton");
+        if (backButton) {
+            backButton.addEventListener("click", function () {
+                window.location.href = "index.html"; // Hoặc trang trước đó
+            });
+        } else {
+            console.error("❌ Không tìm thấy nút backButton!");
+        }
+    });
+</script>
+</body>
 </html>
 

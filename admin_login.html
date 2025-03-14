@@ -15,11 +15,19 @@
 
     <button id="backButton" onclick="location.href='role.html'">⬅ Quay lại</button>
     
-    <div id="adminPanel" style="display: none;">
+    <div id="adminPanel">
         <h3>📌 Danh sách lớp chờ duyệt</h3>
         <ul id="pendingClassesList"></ul>
     </div>
     
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            await loadPendingClasses(); // Tải danh sách lớp chờ duyệt
+        });
+    </script>
+    
+
     <script>
         async function loginWithMetaMask() {
             if (window.ethereum) {

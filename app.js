@@ -276,7 +276,7 @@ const contractABI = [
     constant: true,
   },
 ];
-const contractAddress = "0xA29F48720d65da84fe2F5e4062A6D1Cb2dd191c4";
+const contractAddress = "0x1ec4195c0944240c6b29Bf1e0e165179AAEA6d6D";
 
 let web3;
 let contract;
@@ -398,35 +398,36 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function loadPendingClasses() {
+  if (!contract) {
+      console.error("❌ Hợp đồng chưa được tải.");
+      return;
+  }
+
   try {
-      const events = await contract.getPastEvents("ClassPending", { fromBlock: 0, toBlock: "latest" });
+      console.log("📌 Đang tải danh sách lớp chờ duyệt...");
+      console.log("📜 ABI hợp đồng:", contract);
+      const result = await contract.methods.getPendingClasses().call();
+
+      console.log("✅ Dữ liệu lớp chờ:", result);
 
       const pendingClassesList = document.getElementById("pendingClassesList");
-      pendingClassesList.innerHTML = ""; // Xóa danh sách cũ
+      pendingClassesList.innerHTML = ""; // Xóa danh sách cũ trước khi thêm mới
 
-      if (events.length === 0) {
-          pendingClassesList.innerHTML = "<li>🚫 Không có lớp nào đang chờ duyệt.</li>";
-          return;
+      const classIds = result[0];  // Danh sách ID lớp
+      const classNames = result[1]; // Danh sách tên lớp
+      const teachers = result[2];  // Danh sách giảng viên
+
+      for (let i = 0; i < classIds.length; i++) {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${classNames[i]}</strong> (GV: ${teachers[i]}) 
+                          <button onclick="approveClass(${classIds[i]})">✅ Duyệt</button>`;
+          pendingClassesList.appendChild(li);
       }
-
-      events.forEach(event => {
-          const { classId, name, teacher } = event.returnValues;
-          
-          const listItem = document.createElement("li");
-          listItem.innerHTML = `
-              <strong>📚 Lớp: ${name}</strong> <br/>
-              👨‍🏫 Giảng viên: ${teacher} <br/>
-              <button onclick="approveClass(${classId})">✅ Duyệt</button>
-              <button onclick="rejectClass(${classId})">❌ Từ chối</button>
-              <hr/>
-          `;
-          pendingClassesList.appendChild(listItem);
-      });
-
   } catch (error) {
       console.error("❌ Lỗi khi tải danh sách lớp chờ duyệt:", error);
   }
 }
+
 
 
 // Gọi hàm này khi trang admin tải xong
