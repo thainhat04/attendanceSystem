@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Vai Trò</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("backButton").addEventListener("click", function () {
+            window.location.href = "index.html";
+        });
+    });
+</script>
+<body>
+    <h2>Bạn là ai?</h2>
+    <button onclick="location.href='dashboard.html?role=teacher'">Tôi là Giảng viên 👨‍🏫</button>
+    <button onclick="location.href='dashboard.html?role=student'">Tôi là Sinh viên 🎓</button>
+    <button onclick="location.href='admin_login.html'">🔐 Tôi là Admin</button>   
+
+    <script>
+        document.getElementById("adminButton").addEventListener("click", function () {
+            const savedAdmin = localStorage.getItem("adminAddress");
+            if (!savedAdmin) {
+                alert("❌ Chưa có Admin! Vui lòng kết nối MetaMask để đặt Admin.");
+                return;
+            }
+    
+            window.location.href = "dashboard.html?role=admin";
+        });
+    </script>
+</body>
+
+<button id="backButton">⬅</button>
+</html>
+

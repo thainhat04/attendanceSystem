@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blockchain Attendance</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="modal.css" />
+  </head>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document
+        .getElementById("backButton")
+        .addEventListener("click", function () {
+          window.location.href = "role.html"; // Chuyển về trang chọn vai trò
+        });
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="app.js"></script>
+  <body>
+    <h2>Hệ thống điểm danh Blockchain</h2>
+
+    <button id="connectWallet">🔗 Kết nối MetaMask</button>
+    <p id="walletAddress">🔴 Chưa kết nối</p>
+
+    <div id="teacherPanel" style="display: none">
+      <h3>Giảng viên: Quản lý lớp học</h3>
+      <input type="text" id="className" placeholder="Nhập tên lớp học" />
+      <button id="createClass">Tạo lớp</button>
+
+      <h4>📌 Danh sách lớp học</h4>
+      <select id="classListForAddingStudent">
+        <option value="" disabled selected>Chọn lớp</option>
+      </select>
+
+      <h4>➕ Thêm sinh viên vào lớp</h4>
+      <input
+        type="text"
+        id="studentAddress"
+        placeholder="Nhập địa chỉ ví sinh viên"
+      />
+      <button id="addStudent">Thêm học sinh</button>
+      <button id="listStudent">Danh sách các học sinh</button>
+    </div>
+
+    <div id="adminPanel" style="display: none;">
+      <h3>📌 Danh sách lớp chờ duyệt</h3>
+      <ul id="pendingClassesList"></ul>     
+  </div>
+  
+
+    <div id="studentPanel" style="display: none">
+      <h3>Sinh viên: Điểm danh</h3>
+      <select id="classList">
+        <option value="" disabled selected>Chọn lớp</option>
+      </select>
+      <button id="markAttendance">✅ Điểm danh</button>
+
+      <h3>📜 Lịch sử điểm danh</h3>
+      <button id="viewAttendance">📅 Xem lịch sử</button>
+      <ul id="attendanceHistory"></ul>
+    </div>
+
+    <div id="studentListModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>📋 Danh sách sinh viên</h3>
+        <table id="studentTable">
+          <thead>
+            <tr>
+              <th>Địa chỉ ví</th>
+              <th>Lớp học</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <button id="backButton">⬅</button>
+  <div id="snackbar"></div>
+</html>
