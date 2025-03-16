@@ -1,69 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-</head>
-<body>
+    <script src="app.js"></script>
+  </head>
+  <body>
     <h2>🔐 Đăng nhập Admin</h2>
     <button onclick="loginWithMetaMask()">Đăng nhập bằng MetaMask</button>
 
-    <p id="errorMessage" style="color: red; display: none;">❌ Bạn không có quyền truy cập!</p>
+    <p id="errorMessage" style="color: red; display: none">
+      ❌ Bạn không có quyền truy cập!
+    </p>
 
-    <button id="backButton" onclick="location.href='role.html'">⬅ Quay lại</button>
-    
-    <div id="adminPanel">
-        <h3>📌 Danh sách lớp chờ duyệt</h3>
-        <ul id="pendingClassesList"></ul>
+    <button id="backButton" onclick="location.href='role.html'">
+      ⬅ Quay lại
+    </button>
+
+    <div id="adminPanel" style="display: none">
+      <h3>📌 Danh sách lớp chờ duyệt</h3>
+      <ul id="pendingClassesList"></ul>
     </div>
-    
-    <script src="app.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            await loadPendingClasses(); // Tải danh sách lớp chờ duyệt
-        });
-    </script>
-    
 
     <script>
-        async function loginWithMetaMask() {
-            if (window.ethereum) {
-                try {
-                    const web3 = new Web3(window.ethereum);
-                    await window.ethereum.request({ method: "eth_requestAccounts" });
-
-                    const accounts = await web3.eth.getAccounts();
-                    const userAddress = accounts[0]; // Lấy địa chỉ ví người dùng
-
-                    console.log("🔹 Địa chỉ ví:", userAddress);
-
-                    // Danh sách địa chỉ admin (có thể thay đổi)
-                    const adminAddress = "0x5F36E7A89be6B7DE697920892da6fB8E6c377FfA"; 
-
-                    // Yêu cầu ký tin nhắn
-                    const message = "Xác thực đăng nhập Admin vào hệ thống Blockchain Attendance";
-                    const signature = await web3.eth.personal.sign(message, userAddress, "");
-
-                    console.log("✅ Ký thành công:", signature);
-
-                    // Kiểm tra xem người dùng có phải là Admin không
-                    if (userAddress.toLowerCase() === adminAddress.toLowerCase()) {
-                        window.location.href = "dashboard.html?role=admin";
-                    } else {
-                        document.getElementById("errorMessage").style.display = "block";
-                    }
-                } catch (error) {
-                    console.error("❌ Lỗi khi đăng nhập:", error);
-                    document.getElementById("errorMessage").innerText = "Lỗi khi kết nối MetaMask!";
-                    document.getElementById("errorMessage").style.display = "block";
-                }
-            } else {
-                alert("⚠️ Bạn cần cài MetaMask để đăng nhập!");
-            }
-        }
+      document.addEventListener("DOMContentLoaded", async function () {
+        await loadPendingClasses();
+      });
     </script>
-</body>
+  </body>
 </html>

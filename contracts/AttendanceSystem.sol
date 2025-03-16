@@ -22,7 +22,9 @@ contract AttendanceSystem {
     struct PendingClass {
         string name;
         address teacher;
-        bool isApproved; // Trạng thái phê duyệt
+        bool isApproved;
+        bool isProcessed;  // Added field
+        bool isRejected;   // Added field
     }
 
     mapping(uint256 => Class) public classes;
@@ -51,71 +53,103 @@ contract AttendanceSystem {
         _;
     }
 
-function createClass(string memory _name) public {
-    require(bytes(_name).length > 0, "Class name cannot be empty");
+    function createClass(string memory _name) public {
+        require(bytes(_name).length > 0, "Class name cannot be empty");
 
-    pendingClassCount++;
-   pendingClasses[pendingClassCount] = PendingClass({
-    name: _name,
-    teacher: msg.sender,
-    isApproved: false  // Thêm giá trị cho biến isApproved
-});
+        pendingClassCount++;
+        pendingClasses[pendingClassCount] = PendingClass({
+            name: _name,
+            teacher: msg.sender,
+            isApproved: false,
+            isProcessed: false,  // Initialize the new field
+            isRejected: false    // Initialize the new field
+        });
 
-    emit ClassPending(pendingClassCount, _name, msg.sender);
-}
-
-function getPendingClasses() public view returns (uint256[] memory, string[] memory, address[] memory) {
-    uint256 validCount = 0;
-
-    // Đếm số lớp hợp lệ
-    for (uint256 i = 1; i <= pendingClassCount; i++) {
-        if (pendingClasses[i].teacher != address(0)) {
-            validCount++;
-        }
+        emit ClassPending(pendingClassCount, _name, msg.sender);
     }
 
-    // Khai báo mảng trong phạm vi function
-    uint256[] memory ids = new uint256[](validCount);
-    string[] memory names = new string[](validCount);
-    address[] memory teachers = new address[](validCount);
+    function getPendingClasses() public view returns (uint256[] memory, string[] memory, address[] memory) {
+        uint256 validCount = 0;
 
-    uint256 index = 0;
-    for (uint256 i = 1; i <= pendingClassCount; i++) {
-        if (pendingClasses[i].teacher != address(0)) {
-            ids[index] = i;
-            names[index] = pendingClasses[i].name;
-            teachers[index] = pendingClasses[i].teacher;
-            index++;
+        // Đếm số lớp hợp lệ
+        for (uint256 i = 1; i <= pendingClassCount; i++) {
+            if (pendingClasses[i].teacher != address(0) && !pendingClasses[i].isProcessed) {
+                validCount++;
+            }
         }
+
+        // Khai báo mảng trong phạm vi function
+        uint256[] memory ids = new uint256[](validCount);
+        string[] memory names = new string[](validCount);
+        address[] memory teachers = new address[](validCount);
+
+        uint256 index = 0;
+        for (uint256 i = 1; i <= pendingClassCount; i++) {
+            if (pendingClasses[i].teacher != address(0) && !pendingClasses[i].isProcessed) {
+                ids[index] = i;
+                names[index] = pendingClasses[i].name;
+                teachers[index] = pendingClasses[i].teacher;
+                index++;
+            }
+        }
+
+        return (ids, names, teachers);
     }
 
-    return (ids, names, teachers);
-}
+    function getApprovedClasses() public view returns (uint256[] memory, string[] memory, address[] memory) {
+        uint256 validCount = 0;
 
+        // Đếm số lớp hợp lệ
+        for (uint256 i = 1; i <= classCount; i++) {
+            if (classes[i].isApproved) {
+                validCount++;
+            }
+        }
 
-function approveClass(uint256 _pendingClassId) public onlyAdmin {
-    require(pendingClasses[_pendingClassId].teacher != address(0), "Class not found");
+        // Khai báo mảng trong phạm vi function
+        uint256[] memory ids = new uint256[](validCount);
+        string[] memory names = new string[](validCount);
+        address[] memory teachers = new address[](validCount);
 
-    classCount++;
-    classes[classCount].name = pendingClasses[_pendingClassId].name;
-    classes[classCount].teacher = pendingClasses[_pendingClassId].teacher;
-    classes[classCount].isApproved = true;
+        uint256 index = 0;
+        for (uint256 i = 1; i <= classCount; i++) {
+            if (classes[i].isApproved) {
+                ids[index] = i;
+                names[index] = classes[i].name;
+                teachers[index] = classes[i].teacher;
+                index++;
+            }
+        }
 
-    delete pendingClasses[_pendingClassId];
+        return (ids, names, teachers);
+    }
 
-    emit ClassApproved(classCount);
-}
+    function approveClass(uint256 _pendingClassId) public onlyAdmin {
+        require(pendingClasses[_pendingClassId].teacher != address(0), "Class not found");
+        require(!pendingClasses[_pendingClassId].isProcessed, "Class already processed");
+        
+        classCount++;
+        classes[classCount].name = pendingClasses[_pendingClassId].name;
+        classes[classCount].teacher = pendingClasses[_pendingClassId].teacher;
+        classes[classCount].isApproved = true;
+        
+        // Mark as processed instead of deleting
+        pendingClasses[_pendingClassId].isProcessed = true;
+        
+        emit ClassApproved(classCount);
+    }
     
     function getAdmin() public view returns (address) {
-    return owner;
-}
-
+        return owner;
+    }
 
     function rejectClass(uint256 _pendingClassId) public onlyAdmin {
-        require(pendingClasses[_pendingClassId].teacher != address(0), "lop khong ton taitai");
-
-        delete pendingClasses[_pendingClassId];
-
+        require(pendingClasses[_pendingClassId].teacher != address(0), "Lop khong ton tai");
+        require(!pendingClasses[_pendingClassId].isProcessed, "Class already processed");
+        
+        pendingClasses[_pendingClassId].isProcessed = true;
+        pendingClasses[_pendingClassId].isRejected = true;
+        
         emit ClassRejected(_pendingClassId);
     }
 
