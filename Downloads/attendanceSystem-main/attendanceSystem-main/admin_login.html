@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="app.js"></script>
+  </head>
+  <body>
+    <h2>🔐 Đăng nhập Admin</h2>
+    <button onclick="loginWithMetaMask()">Đăng nhập bằng MetaMask</button>
+
+    <p id="errorMessage" style="color: red; display: none">
+      ❌ Bạn không có quyền truy cập!
+    </p>
+
+    <button id="backButton" onclick="location.href='role.html'">
+      ⬅
+    </button>
+
+    <div id="adminPanel" style="display: none">
+      <h3>📌 Danh sách lớp chờ duyệt</h3>
+      <ul id="pendingClassesList"></ul>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        await loadPendingClasses();
+      });
+    </script>
+  </body>
+</html>

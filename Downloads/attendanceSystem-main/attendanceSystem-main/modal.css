@@ -1,0 +1,87 @@
+/* Hiệu ứng mở modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Kiểu dáng modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px); /* Làm mờ nền */
+}
+
+/* Nội dung modal */
+.modal-content {
+  background: linear-gradient(135deg, #2a2a2a, #3e3e3e);
+  color: #fff;
+  margin: 10% auto;
+  padding: 25px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Nút đóng modal */
+.close {
+  color: #ff4c4c;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.close:hover {
+  color: #ff0000;
+}
+
+/* Bảng hiển thị danh sách */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f1f1f1;
+}
+
+/* Header bảng */
+th {
+  background: linear-gradient(135deg, #ff8c00, #ff4c4c);
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Dòng lẻ có nền khác để dễ nhìn hơn */
+tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Hover vào hàng sẽ sáng lên */
+tr:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transition: 0.3s ease-in-out;
+}
